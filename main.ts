@@ -2,14 +2,10 @@ import { Plugin } from "obsidian";
 
 export default class OpenInNewTabPlugin extends Plugin {
 	async onload() {
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
 		this.registerDomEvent(document, "click", this.handleClick, {
 			capture: true,
 		});
 	}
-
-	onunload() {}
 
 	handleClick(event: MouseEvent) {
 		const target = event.target as Element;
@@ -17,6 +13,7 @@ export default class OpenInNewTabPlugin extends Plugin {
 			target?.classList?.contains("nav-file-title") ||
 			target?.classList?.contains("nav-file-title-content");
 		const titleEl = target?.closest(".nav-file-title");
+
 		// Make sure it's just a left click so we don't interfere with anything.
 		const pureClick =
 			!event.shiftKey &&
@@ -26,8 +23,7 @@ export default class OpenInNewTabPlugin extends Plugin {
 			!event.altKey;
 
 		if (isNavFile && titleEl && pureClick) {
-			// Probably not the best...
-			event.stopPropagation();
+			event.stopPropagation(); // This might break something...
 			const path = titleEl.getAttribute("data-path");
 			if (path) {
 				// This logic is borrowed from the obsidian-no-dupe-leaves plugin
