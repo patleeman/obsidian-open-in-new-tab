@@ -1,6 +1,6 @@
 {
-	"name": "open-in-new-tab-plugin",
-	"version": "1.0.2",
+	"name": "open-in-new-tab",
+	"version": "1.0.3",
 	"description": "Open In New Tab",
 	"main": "main.js",
 	"scripts": {

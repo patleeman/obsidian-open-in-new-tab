@@ -1,7 +1,7 @@
 {
-	"id": "open-in-new-tab-plugin",
+	"id": "open-in-new-tab",
 	"name": "Open In New Tab",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"minAppVersion": "0.15.0",
 	"description": "Opens files in new tabs",
 	"author": "Patrick Lee",
