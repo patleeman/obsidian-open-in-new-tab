@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-open-in-new-tab-plugin",
 	"name": "Open In New Tab",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"minAppVersion": "0.15.0",
 	"description": "Opens files in new tabs",
 	"author": "Patrick Lee",
