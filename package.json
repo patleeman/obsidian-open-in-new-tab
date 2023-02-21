@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
-	"version": "1.0.1",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"name": "open-in-new-tab-plugin",
+	"version": "1.0.2",
+	"description": "Open In New Tab",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
