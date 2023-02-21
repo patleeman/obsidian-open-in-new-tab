@@ -4,8 +4,7 @@
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Opens files in new tabs",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"author": "Patrick Lee",
+	"authorUrl": "https://patricklee.nyc",
 	"isDesktopOnly": false
 }
