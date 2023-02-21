@@ -28,7 +28,6 @@ export default class OpenInNewTabPlugin extends Plugin {
 				// This logic is borrowed from the obsidian-no-dupe-leaves plugin
 				// https://github.com/patleeman/obsidian-no-dupe-leaves/blob/master/src/main.ts#L32-L46
 				let result = false;
-				// Check if there is an "empty" view which I think means there is a new tab tab open. If so, we want to use that.
 				app.workspace.iterateAllLeaves((leaf) => {
 					const viewState = leaf.getViewState();
 					if (viewState.state?.file === path) {
