@@ -28,25 +28,25 @@ export default class OpenInNewTabPlugin extends Plugin {
 				// This logic is borrowed from the obsidian-no-dupe-leaves plugin
 				// https://github.com/patleeman/obsidian-no-dupe-leaves/blob/master/src/main.ts#L32-L46
 				let result = false;
-				app.workspace.iterateAllLeaves((leaf) => {
+				this.app.workspace.iterateAllLeaves((leaf) => {
 					const viewState = leaf.getViewState();
 					if (viewState.state?.file === path) {
-						app.workspace.setActiveLeaf(leaf);
+						this.app.workspace.setActiveLeaf(leaf);
 						result = true;
 					}
 				});
 
 				// If we have a "New Tab" tab open, just switch to that and let
 				// the default behavior open the file in that.
-				const emptyLeaves = app.workspace.getLeavesOfType("empty");
+				const emptyLeaves = this.app.workspace.getLeavesOfType("empty");
 				if (emptyLeaves.length > 0) {
-					app.workspace.setActiveLeaf(emptyLeaves[0]);
+					this.app.workspace.setActiveLeaf(emptyLeaves[0]);
 					return;
 				}
 
 				if (!result) {
 					event.stopPropagation(); // This might break something...
-					window.app.workspace.openLinkText(path, path, true);
+					this.app.workspace.openLinkText(path, path, true);
 				}
 			}
 		}
