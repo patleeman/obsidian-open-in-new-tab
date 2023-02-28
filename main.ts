@@ -1,11 +1,64 @@
-import { Plugin, App } from "obsidian";
+import { Plugin, App, OpenViewState, Workspace, WorkspaceLeaf } from "obsidian";
+import { around } from 'monkey-around';
+
 
 export default class OpenInNewTabPlugin extends Plugin {
+	uninstallMonkeyPatch: () => void;
+
 	async onload() {
+		this.monkeyPatchOpenLinkText();
+
 		this.registerDomEvent(document, "click", this.generateClickHandler(this.app), {
 			capture: true,
 		});
 	}
+
+	onunload(): void {
+		this.uninstallMonkeyPatch && this.uninstallMonkeyPatch();
+	}
+
+	monkeyPatchOpenLinkText() {
+		// This logic is directly pulled from https://github.com/scambier/obsidian-no-dupe-leaves
+		// In order to open link clicks in the editor in a new leaf, the only way it seems to be able to do this
+		// is by monkey patching the openLinkText method. Not super great, but it works.
+		this.uninstallMonkeyPatch = around(Workspace.prototype, {
+			openLinkText(oldOpenLinkText) {
+				return async function (
+					linkText: string,
+					sourcePath: string,
+					_?: boolean,
+					openViewState?: OpenViewState) {
+					// Search existing panes and open that pane if the document is already open.
+					let result = false
+					// Check all open panes for a matching path
+					this.app.workspace.iterateAllLeaves((leaf: WorkspaceLeaf) => {
+						const viewState = leaf.getViewState()
+						const matchesMarkdownFile = viewState.type === 'markdown' && viewState.state?.file === `${linkText}.md`;
+						const matchesNonMarkdownFile = viewState.type !== 'markdown' && viewState.state?.file === linkText;
+						if (
+							matchesMarkdownFile || matchesNonMarkdownFile
+						) {
+							this.app.workspace.setActiveLeaf(leaf)
+							result = true
+						}
+					})
+
+					if (!result) {
+						result =
+							oldOpenLinkText &&
+							oldOpenLinkText.apply(this, [
+								linkText,
+								sourcePath,
+								true, // Always open a new leaf
+								openViewState,
+							])
+					}
+
+				}
+			},
+		})
+	}
+
 
 	generateClickHandler(appInstance: App) {
 		return function (event: MouseEvent) {

@@ -1,6 +1,6 @@
 {
 	"name": "open-in-new-tab",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Open In New Tab",
 	"main": "main.js",
 	"scripts": {
@@ -20,5 +20,8 @@
 		"obsidian": "latest",
 		"tslib": "2.4.0",
 		"typescript": "4.7.4"
+	},
+	"dependencies": {
+		"monkey-around": "^2.3.0"
 	}
 }
