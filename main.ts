@@ -1,4 +1,4 @@
-import { Plugin, App, OpenViewState, Workspace, WorkspaceLeaf } from "obsidian";
+import { Plugin, App, OpenViewState, Workspace, WorkspaceLeaf, MarkdownView } from "obsidian";
 import { around } from 'monkey-around';
 
 
@@ -26,15 +26,17 @@ export default class OpenInNewTabPlugin extends Plugin {
 				return async function (
 					linkText: string,
 					sourcePath: string,
-					_?: boolean,
+					newLeaf?: boolean,
 					openViewState?: OpenViewState) {
+					const fileName = linkText.split("#")?.[0];
+
 					// Search existing panes and open that pane if the document is already open.
 					let result = false
 					// Check all open panes for a matching path
 					this.app.workspace.iterateAllLeaves((leaf: WorkspaceLeaf) => {
 						const viewState = leaf.getViewState()
-						const matchesMarkdownFile = viewState.type === 'markdown' && viewState.state?.file === `${linkText}.md`;
-						const matchesNonMarkdownFile = viewState.type !== 'markdown' && viewState.state?.file === linkText;
+						const matchesMarkdownFile = viewState.type === 'markdown' && viewState.state?.file === `${fileName}.md`;
+						const matchesNonMarkdownFile = viewState.type !== 'markdown' && viewState.state?.file === fileName;
 						if (
 							matchesMarkdownFile || matchesNonMarkdownFile
 						) {
@@ -44,16 +46,16 @@ export default class OpenInNewTabPlugin extends Plugin {
 					})
 
 					if (!result) {
-						result =
-							oldOpenLinkText &&
+						oldOpenLinkText &&
 							oldOpenLinkText.apply(this, [
 								linkText,
 								sourcePath,
-								true, // Always open a new leaf
+								// If the fileName is empty, it means it's a link to a heading or
+								// block on the same page. e.g. [[#Heading 1]] or [[#^asdf]]
+								fileName === "" ? newLeaf : true,
 								openViewState,
 							])
 					}
-
 				}
 			},
 		})
@@ -107,3 +109,4 @@ export default class OpenInNewTabPlugin extends Plugin {
 		}
 	}
 }
+
