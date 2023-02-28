@@ -30,20 +30,28 @@ export default class OpenInNewTabPlugin extends Plugin {
 					openViewState?: OpenViewState) {
 					const fileName = linkText.split("#")?.[0];
 
+					// Detect if we're clicking on a link within the same file. This can happen two ways:
+					// [[LinkDemo#Header 1]] or [[#Header 1]]
+					const isSameFile = fileName === "" || `${fileName}.md` === sourcePath;
+
 					// Search existing panes and open that pane if the document is already open.
 					let result = false
-					// Check all open panes for a matching path
-					this.app.workspace.iterateAllLeaves((leaf: WorkspaceLeaf) => {
-						const viewState = leaf.getViewState()
-						const matchesMarkdownFile = viewState.type === 'markdown' && viewState.state?.file === `${fileName}.md`;
-						const matchesNonMarkdownFile = viewState.type !== 'markdown' && viewState.state?.file === fileName;
-						if (
-							matchesMarkdownFile || matchesNonMarkdownFile
-						) {
-							this.app.workspace.setActiveLeaf(leaf)
-							result = true
-						}
-					})
+					if (!isSameFile) {
+						// Check all open panes for a matching path
+						this.app.workspace.iterateAllLeaves((leaf: WorkspaceLeaf) => {
+							const viewState = leaf.getViewState()
+
+							const matchesMarkdownFile = viewState.type === 'markdown' && viewState.state?.file === `${fileName}.md`;
+							const matchesNonMarkdownFile = viewState.type !== 'markdown' && viewState.state?.file === fileName;
+
+							if (
+								matchesMarkdownFile || matchesNonMarkdownFile
+							) {
+								this.app.workspace.setActiveLeaf(leaf)
+								result = true
+							}
+						})
+					}
 
 					if (!result) {
 						oldOpenLinkText &&
@@ -52,7 +60,7 @@ export default class OpenInNewTabPlugin extends Plugin {
 								sourcePath,
 								// If the fileName is empty, it means it's a link to a heading or
 								// block on the same page. e.g. [[#Heading 1]] or [[#^asdf]]
-								fileName === "" ? newLeaf : true,
+								isSameFile ? newLeaf : true,
 								openViewState,
 							])
 					}
