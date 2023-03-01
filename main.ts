@@ -40,9 +40,8 @@ export default class OpenInNewTabPlugin extends Plugin {
 						// Check all open panes for a matching path
 						this.app.workspace.iterateAllLeaves((leaf: WorkspaceLeaf) => {
 							const viewState = leaf.getViewState()
-
-							const matchesMarkdownFile = viewState.type === 'markdown' && viewState.state?.file === `${fileName}.md`;
-							const matchesNonMarkdownFile = viewState.type !== 'markdown' && viewState.state?.file === fileName;
+							const matchesMarkdownFile = viewState.type === 'markdown' && viewState.state?.file?.endsWith(`${fileName}.md`);
+							const matchesNonMarkdownFile = viewState.type !== 'markdown' && viewState.state?.file?.endsWith(fileName);
 
 							if (
 								matchesMarkdownFile || matchesNonMarkdownFile
