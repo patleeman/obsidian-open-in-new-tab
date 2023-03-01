@@ -35,7 +35,7 @@ export default class OpenInNewTabPlugin extends Plugin {
 					const isSameFile = fileName === "" || `${fileName}.md` === sourcePath;
 
 					// Search existing panes and open that pane if the document is already open.
-					let result = false
+					let fileAlreadyOpen = false
 					if (!isSameFile) {
 						// Check all open panes for a matching path
 						this.app.workspace.iterateAllLeaves((leaf: WorkspaceLeaf) => {
@@ -48,22 +48,27 @@ export default class OpenInNewTabPlugin extends Plugin {
 								matchesMarkdownFile || matchesNonMarkdownFile
 							) {
 								this.app.workspace.setActiveLeaf(leaf)
-								result = true
+								fileAlreadyOpen = true
 							}
 						})
 					}
 
-					if (!result) {
-						oldOpenLinkText &&
-							oldOpenLinkText.apply(this, [
-								linkText,
-								sourcePath,
-								// If the fileName is empty, it means it's a link to a heading or
-								// block on the same page. e.g. [[#Heading 1]] or [[#^asdf]]
-								isSameFile ? newLeaf : true,
-								openViewState,
-							])
+					let openNewLeaf = true;
+					if (isSameFile) {
+						// This means it's a link to a heading or block on the same page. e.g. [[#Heading 1]] or [[#^asdf]]. In this case, fall back to the intended behavior passed in. This is necessary to preserve middle mouse button clicks.
+						openNewLeaf = newLeaf || false;
+					} else if (fileAlreadyOpen) {
+						// If the file is already open in another leaf, we set the leaf active above, and we just want the old openLinkText function to handle stuff like highlighting or navigating to a header.
+						openNewLeaf = false;
 					}
+
+					oldOpenLinkText &&
+						oldOpenLinkText.apply(this, [
+							linkText,
+							sourcePath,
+							openNewLeaf,
+							openViewState,
+						])
 				}
 			},
 		})

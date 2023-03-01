@@ -1,6 +1,6 @@
 {
 	"name": "open-in-new-tab",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"description": "Open In New Tab",
 	"main": "main.js",
 	"scripts": {
