@@ -1,5 +1,14 @@
 # Obsidian Open In New Tab Plugin
 
+**NOTE**
+
+The way this plugin works is through hijacking the clicks for the file explorer. This means that it won't work for other parts of Obsidian like the quick switcher. This plugins is just a hack and Obsidian will need to implement the underlying functionality at the end of the day.
+
+I'm not putting much effort into expanding on this plugin since it would essentially be a game of wackamole to hackily patch all potential use cases. If you'd like this functionality natively, I suggest submitting a feature request to Obsidian.
+
+
+# Introduction
+
 This plugin does two things:
 
 1. In File Explorer, open all documents in a new tab.
