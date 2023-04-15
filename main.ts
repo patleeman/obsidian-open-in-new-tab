@@ -28,6 +28,21 @@ export default class OpenInNewTabPlugin extends Plugin {
 					sourcePath: string,
 					newLeaf?: boolean,
 					openViewState?: OpenViewState) {
+						
+					// If using the homepage plugin, don't conflict with its behaviour
+					const homepage = this.app.plugins.plugins.homepage;
+
+					if (homepage && homepage.executing) {
+						oldOpenLinkText &&
+						oldOpenLinkText.apply(this, [
+							linkText,
+							sourcePath,
+							newLeaf,
+							openViewState,
+						])
+						return;
+					}	
+						
 					const fileName = linkText.split("#")?.[0];
 
 					// Detect if we're clicking on a link within the same file. This can happen two ways:
